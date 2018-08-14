@@ -50,6 +50,10 @@ git remote rm origin           //删除远程选中的 Git 仓库
 
 -------
 
+测试连接成功否
+```
+ssh -T git@github.com
+```
 
 git全局设置：
 ```

@@ -1,0 +1,21 @@
+
+//设置cookie
+document.cookie='usernames'+ "=" +escape('444')
+
+//获取页面上的素有cookie
+alert(document.cookie);
+
+//js获取cookie值
+
+function getCookie(name){
+    var strcookie = document.cookie;//获取cookie字符串
+    var arrcookie = strcookie.split("; ");//分割
+    //遍历匹配
+    for ( var i = 0; i < arrcookie.length; i++) {
+        var arr = arrcookie[i].split("=");
+        if (arr[0] == name){
+            return arr[1];
+        }
+    }
+    return "";
+}

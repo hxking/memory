@@ -99,3 +99,5 @@
 
 ## less11 POST - Error Based - Single quotes- String (基于错误的POST型单引号字符型注入)
 
+- 获取数据集长度
+http://120.203.13.111:6815/?id=1%20and%20length((select%20database()))=6%20#
